@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Spotify from 'spotify-web-api-js'
-import socketIOClient from "socket.io-client";
 import './App.css'
+import { newMusic } from './services/socket';
 
 const spotifyWebApi = new Spotify()
 
@@ -9,17 +9,12 @@ function App() {
   const [params, setParams] = useState(getHashParams())
   const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false)
   const [nowPlaying, setNowPlaying] = useState({name: 'Not Checked', image: '', band: ''})
+  const [similar, setSimilar] = useState("")
 
   useEffect(() => {
     if (params.access_token) {
       spotifyWebApi.setAccessToken(params.access_token)
     }
-
-    socketIOClient.Socket.on("refresh-users", data => {
-      /**
-       * REFRESH USERS
-       */
-    })
   }, [])
 
   function getHashParams() {
@@ -44,18 +39,29 @@ function App() {
         })
       }
     })
-  }
 
-  function foundSimilarArtists(artist) {
-    let artistId = spotifyWebApi.searchArtists(artist).then(response => console.log(response.artists.items[0].id))
+    let user
+    spotifyWebApi.getMe().then(response => console.log(response))
 
-    spotifyWebApi.getArtistRelatedArtists(artistId).then(response => {
-      console.log(response)
+    newMusic({
+      band: nowPlaying.band,
+      name: nowPlaying.name,
+      spotifyWebApi
     })
-
-    
   }
-  
+
+  async function foundSimilarArtists(artist) {
+    let artistId = await spotifyWebApi.searchArtists(artist).then(response => response.artists.items[0].id)
+
+    console.log(artistId)
+
+    return spotifyWebApi.getArtistRelatedArtists(artistId).then(response => {
+      console.log(response)
+      console.log(response.artists[Math.floor(Math.random() * response.artists.length)])
+      setSimilar(response.artists[Math.floor(Math.random() * response.artists.length)].name)
+    })
+  }
+
   return (
     <div className="App">
       <a href="http://localhost:8888">
@@ -68,6 +74,8 @@ function App() {
       <button onClick={() => getNowPlaying()}>
         Check Now Playing
       </button>
+      <h2>{similar}</h2>
+      <button onClick={() => foundSimilarArtists(nowPlaying.band)}>Similar</button>
     </div>
   );
 }

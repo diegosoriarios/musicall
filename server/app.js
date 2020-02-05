@@ -17,33 +17,6 @@ var client_id = '5a39fb6186e0447d9338e753de6feb9e'; // Your client id
 var client_secret = '***REMOVED***'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
-const http = require('http').createServer(app);
-const io = require('socket.io')(http)
-
-let bd = {}
-
-/**
- * 
- * @param {SOCKET CONNECTION} length 
- */
-io.on('connection', (socket) => {
-  console.log('a user connected')
-  socket.on('disconnect', () => {
-    console.log('user disconnected')
-  })
-
-  socket.on('new-music', (data) => {
-    let key = `${data.band}-${data.name}`
-    if (bd[key] != null) {
-      bd[key].concat(data.user) 
-    } else {
-      bd[key] = data.user
-    }
-
-    socket.emit("refresh-users", bd[key])
-  });
-})
-
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -171,4 +144,4 @@ app.get('/refresh_token', function(req, res) {
 });
 
 console.log('Listening on 8888');
-http.listen(8888);
+app.listen(8888);
