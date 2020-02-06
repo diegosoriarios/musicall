@@ -56,28 +56,37 @@ function App() {
     console.log(artistId)
 
     return spotifyWebApi.getArtistRelatedArtists(artistId).then(response => {
-      console.log(response)
-      console.log(response.artists[Math.floor(Math.random() * response.artists.length)])
-      setSimilar(response.artists[Math.floor(Math.random() * response.artists.length)].name)
+      let random = Math.floor(Math.random() * response.artists.length)
+      console.log(response.artists[random])
+      setSimilar({ name: response.artists[random].name, image: response.artists[random].images[0].url})
     })
   }
 
-  return (
-    <div className="App">
-      <a href="http://localhost:8888">
-        <button>Login with spotify</button>
-      </a>
-      <div> Now playing: { `${nowPlaying.band}-${nowPlaying.name}` }</div>
-      <div>
-        <img src={ nowPlaying.image } style={{ width: 100 }} />
+
+  if (loggedIn) {
+    return (
+      <div className="App">
+        <div> Now playing: { `${nowPlaying.band}-${nowPlaying.name}` }</div>
+        <div>
+          <img src={ nowPlaying.image } style={{ width: 100 }} />
+        </div>
+        <button onClick={() => getNowPlaying()}>
+          Check Now Playing
+        </button>
+        <h2>{similar.name}</h2>
+        <img src={ similar.image } style={{ width: 100 }} />
+        <button onClick={() => foundSimilarArtists(nowPlaying.band)}>Similar</button>
       </div>
-      <button onClick={() => getNowPlaying()}>
-        Check Now Playing
-      </button>
-      <h2>{similar}</h2>
-      <button onClick={() => foundSimilarArtists(nowPlaying.band)}>Similar</button>
-    </div>
-  );
+    )
+  } else {
+    return (
+      <div className="App">
+        <a href="http://localhost:8888">
+          <button className="login-btn">Login with spotify</button>
+        </a>
+      </div>
+    );
+  }
 }
 
 export default App;

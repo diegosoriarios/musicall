@@ -40,3 +40,10 @@
 div, button {
   margin: 15px;
 }
+
+.login-btn {
+  background-color: #1db954;
+  width: 100px;
+  border-radius: 50px;
+  color: white;
+}
