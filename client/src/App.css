@@ -1,5 +1,15 @@
+@import-normalize;
+
+*, #root, html {
+  margin: 0;
+  padding: 0;
+}
+
 .App {
+  display: flex;
+  flex-direction: column;
   text-align: center;
+  margin: 0;
 }
 
 .App-logo {
@@ -46,4 +56,59 @@ div, button {
   width: 100px;
   border-radius: 50px;
   color: white;
+}
+
+.page-header {
+  background-color: black;
+  color: white;
+  width: 100%;
+  margin: 0;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom-left-radius: 50px;
+  box-shadow: 0px 11px 58px -4px rgba(0,0,0,0.82);
+}
+
+.page-header button, .page-center button {
+  background-color: #1db954;
+  width: 100px;
+  border-radius: 50px;
+  color: white;
+}
+
+.page-center {
+  background: #00F260;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #0575E6, #00F260);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #0575E6, #00F260); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  width: 100%;
+  margin: 0;
+  z-index: -1;
+  padding: 15%;
+  margin-top: -15%;
+  border-bottom-left-radius: 50px;
+  box-shadow: 0px 11px 58px -4px rgba(0,0,0,0.82);
+  display: flex;
+  flex-direction: column;
+}
+
+.playing-image {
+  border-radius: 50%;
+  width: 100px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  background-color: black;
+  width: 100%;
+  height: 5vh;
+  margin: 0;
+  align-items: center;
+  justify-content: space-around;
+  font-size: .75em;
+  position: absolute;
+  top: 0;
 }

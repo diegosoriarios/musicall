@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import Spotify from 'spotify-web-api-js'
 import './App.css'
 import { newMusic } from './services/socket';
+import Header from './components/Header';
 
 const spotifyWebApi = new Spotify()
+const DEFAULT_IMAGE = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
 
 function App() {
   const [params, setParams] = useState(getHashParams())
@@ -39,15 +41,16 @@ function App() {
         })
       }
     })
+    .catch(e => console.error(e))
 
-    let user
-    spotifyWebApi.getMe().then(response => console.log(response))
+    //let user
+    //spotifyWebApi.getMe().then(response => console.log(response))
 
-    newMusic({
+    /*newMusic({
       band: nowPlaying.band,
       name: nowPlaying.name,
       spotifyWebApi
-    })
+    })*/
   }
 
   async function foundSimilarArtists(artist) {
@@ -66,16 +69,21 @@ function App() {
   if (loggedIn) {
     return (
       <div className="App">
-        <div> Now playing: { `${nowPlaying.band}-${nowPlaying.name}` }</div>
-        <div>
-          <img src={ nowPlaying.image } style={{ width: 100 }} />
+        <Header title={'Home'} />
+        <div className="page-header">
+          <div> Now playing: { `${nowPlaying.band}-${nowPlaying.name}` }</div>
+          <div>
+            <img src={ !nowPlaying.image ? DEFAULT_IMAGE : nowPlaying.image } className="playing-image" />
+          </div>
+          <button onClick={() => getNowPlaying()}>
+            Check Now Playing
+          </button>
         </div>
-        <button onClick={() => getNowPlaying()}>
-          Check Now Playing
-        </button>
-        <h2>{similar.name}</h2>
-        <img src={ similar.image } style={{ width: 100 }} />
-        <button onClick={() => foundSimilarArtists(nowPlaying.band)}>Similar</button>
+        <div className="page-center">
+          <h2>{similar.name}</h2>
+          <img src={ similar.image } style={{ width: 100 }} />
+          <button onClick={() => foundSimilarArtists(nowPlaying.band)}>Similar</button>
+        </div>
       </div>
     )
   } else {
