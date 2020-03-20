@@ -10,6 +10,8 @@ import {
 import Spotify from 'spotify-web-api-js'
 import HomePage from './pages/HomePage';
 import Chat from './pages/Chat';
+import Profile from './pages/Profile';
+import { Navbar, NavbarItem } from './style'
 
 const spotifyWebApi = new Spotify()
 
@@ -44,20 +46,20 @@ export default function App() {
   return (
     <Router>
       <div style={{ margin: 0 }}>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/profile">Profile</Link>
-          </li>
-          <li>
-            <Link to="/topics">Topics</Link>
-          </li>
-          <li>
-            <Link to="/chat">Chat</Link>
-          </li>
-        </ul>
+        <Navbar>
+          <NavbarItem>
+            <Link style={{ textDecoration: 'none' }} to="/">Home</Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link style={{ textDecoration: 'none' }} to="/profile">Profile</Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link style={{ textDecoration: 'none' }} to="/topics">Topics</Link>
+          </NavbarItem>
+          <NavbarItem>
+            <Link style={{ textDecoration: 'none' }} to="/chat">Chat</Link>
+          </NavbarItem>
+        </Navbar>
 
         <Switch>
           <Route path="/profile">
@@ -82,14 +84,6 @@ export default function App() {
       </div>
     </Router>
   );
-}
-
-function Profile({ user }) {
-    return <div>
-        <h2>{user.name}</h2>
-        <h3>{user.email}</h3>
-        <img src={user.image} alt={user.name} />
-    </div>
 }
 
 function Topics() {
