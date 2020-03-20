@@ -1,27 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import Spotify from 'spotify-web-api-js'
-import './App.css'
-import Header from './components/Header';
+//import Spotify from 'spotify-web-api-js'
+import '../App.css'
 import openSocket from 'socket.io-client'
+import Chat from '../pages/Chat';
+import { useHistory } from "react-router-dom";
 
-const spotifyWebApi = new Spotify()
+
+//const spotifyWebApi = new Spotify()
 const DEFAULT_IMAGE = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
 const socket = openSocket('http://localhost:3210')
 
-function App() {
-  const [params, setParams] = useState(getHashParams())
-  const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false)
+function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat }) {
+
+
+  //const [params, setParams] = useState(getHashParams())
+  //console.log(params)
+  //const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false)
   const [nowPlaying, setNowPlaying] = useState({name: 'Not Checked', image: '', band: ''})
   const [similar, setSimilar] = useState("")
   const [list, setList] = useState([])
+  const [user, setUser] = useState({})
+  let history = useHistory();
 
   useEffect(() => {
+    /*
     if (params.access_token) {
       spotifyWebApi.setAccessToken(params.access_token)
     }
     if (loggedIn) {
       getNowPlaying()
-    }
+    }*/
+    setUser({
+      name: params.name,
+      email: params.email,
+      image: params.image
+    })
     socket.on('update_list', client => {
       console.log(client)
       for (let band in client) {
@@ -33,7 +46,7 @@ function App() {
     })
   }, [])
 
-  function getHashParams() {
+  /*function getHashParams() {
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
         q = window.location.hash.substring(1);
@@ -41,9 +54,10 @@ function App() {
        hashParams[e[1]] = decodeURIComponent(e[2]);
     }
     return hashParams;
-  }
+  }*/
 
   function getNowPlaying() {    
+    
     spotifyWebApi.getMyCurrentPlaybackState()
     .then(response => {
       if(response.item) {
@@ -55,7 +69,7 @@ function App() {
         socket.emit('new_music', {
           band: response.item.artists[0].name,
           name: response.item.name,
-          user: 'Diego Soria Rios'
+          user: user.name
         })
       }
     })
@@ -96,11 +110,14 @@ function App() {
     });
   }
 
+  function handleChatClick(u) {
+    addUserToChat(u)
+    history.push('/chat')
+  }
 
   if (loggedIn) {
     return (
       <div className="App">
-        <Header title={'Home'} />
         <div className="page-header">
           <div> Now playing: { `${nowPlaying.band}-${nowPlaying.name}` }</div>
           <div>
@@ -116,11 +133,13 @@ function App() {
           <button onClick={() => foundSimilarArtists(nowPlaying.band)}>Similar</button>
         </div>
         {list && 
-          list.map((user, i) => (
-            <p key={i} onClick={() => createPrivateChat(user)}>{user}</p>
-          ))
+          list.map((u, i) => {
+            //if (u != user.name) {
+              return <button key={i} onClick={() => handleChatClick(u)}>{u}</button>
+            //}
+            //return null
+          })
         }
-
       </div>
     )
   } else {
@@ -134,4 +153,4 @@ function App() {
   }
 }
 
-export default App;
+export default HomePage;
