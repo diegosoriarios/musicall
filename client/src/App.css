@@ -70,6 +70,7 @@ div, button {
   justify-content: center;
   border-bottom-left-radius: 50px;
   box-shadow: 0px 11px 58px -4px rgba(0,0,0,0.82);
+  z-index: 1;
 }
 
 .page-header button, .page-center button {
@@ -85,7 +86,6 @@ div, button {
   background: linear-gradient(to right, #0575E6, #00F260); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   width: 100%;
   margin: 0;
-  z-index: -1;
   padding: 15%;
   margin-top: -15%;
   border-bottom-left-radius: 50px;

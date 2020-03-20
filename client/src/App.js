@@ -1,22 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import Spotify from 'spotify-web-api-js'
 import './App.css'
-import { newMusic } from './services/socket';
 import Header from './components/Header';
+import openSocket from 'socket.io-client'
 
 const spotifyWebApi = new Spotify()
 const DEFAULT_IMAGE = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
+const socket = openSocket('http://localhost:3210')
 
 function App() {
   const [params, setParams] = useState(getHashParams())
   const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false)
   const [nowPlaying, setNowPlaying] = useState({name: 'Not Checked', image: '', band: ''})
   const [similar, setSimilar] = useState("")
+  const [list, setList] = useState([])
 
   useEffect(() => {
     if (params.access_token) {
       spotifyWebApi.setAccessToken(params.access_token)
     }
+    if (loggedIn) {
+      getNowPlaying()
+    }
+    socket.on('update_list', client => {
+      console.log(client)
+      for (let band in client) {
+        console.log(band)
+        for (let music in client[band]) {
+          setList(client[band][music].users)
+        }
+      }
+    })
   }, [])
 
   function getHashParams() {
@@ -33,11 +47,15 @@ function App() {
     spotifyWebApi.getMyCurrentPlaybackState()
     .then(response => {
       if(response.item) {
-        console.log(response)
         setNowPlaying({
           name: response.item.name,
           image: response.item.album.images[0].url,
           band: response.item.artists[0].name
+        })
+        socket.emit('new_music', {
+          band: response.item.artists[0].name,
+          name: response.item.name,
+          user: 'Diego Soria Rios'
         })
       }
     })
@@ -65,6 +83,19 @@ function App() {
     })
   }
 
+  function createPrivateChat(user) {
+    let conversation_id = `Diego Soria Rios-${user}`
+    socket.emit('subscribe', conversation_id)
+    socket.emit('send message', {
+      room: conversation_id,
+      message: "Some message"
+    });
+    
+    socket.on('conversation private post', function(data) {
+        //display data.message
+    });
+  }
+
 
   if (loggedIn) {
     return (
@@ -84,6 +115,12 @@ function App() {
           <img src={ similar.image } style={{ width: 100 }} />
           <button onClick={() => foundSimilarArtists(nowPlaying.band)}>Similar</button>
         </div>
+        {list && 
+          list.map((user, i) => (
+            <p key={i} onClick={() => createPrivateChat(user)}>{user}</p>
+          ))
+        }
+
       </div>
     )
   } else {

@@ -17,6 +17,8 @@ var client_id = '5a39fb6186e0447d9338e753de6feb9e'; // Your client id
 var client_secret = '***REMOVED***'; // Your secret
 var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
+const socket = require('./services/socket')
+
 /**
  * Generates a random string containing numbers and letters
  * @param  {number} length The length of the string
@@ -145,3 +147,53 @@ app.get('/refresh_token', function(req, res) {
 
 console.log('Listening on 8888');
 app.listen(8888);
+
+let clients = {}
+
+socket.socket.on('connection', (client) => {
+  console.log('a user connected');
+
+  client.on("new_music", music => {
+    const { band, name, user } = music
+
+    console.log(music)
+    
+    if (band in clients) {
+      if (name in clients[band]) {
+        clients[band][name].users = [...clients[band][name].users, user]
+      } else {
+        clients[band] = {
+          [name]: {
+            users: [user]
+          }
+        }
+      }
+    } else {
+      clients = {
+        [band]: {
+          [name]: {
+            users: [user]
+          }
+        }
+      }
+    }
+
+    client.emit('update_list', clients)
+  })
+
+  client.on('subscribe', function(room) {
+    console.log('joining room', room);
+    socket.join(room);
+  });
+
+  client.on('send message', function(data) {
+    console.log('sending room post', data.room);
+    socket.broadcast.to(data.room).emit('conversation private post', {
+        message: data.message
+    });
+  });
+})
+
+socket.server.listen(3210, () => {
+  console.log('listening on *:3210');
+});
