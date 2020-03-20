@@ -18,6 +18,7 @@ export default function App() {
     const [params, setParams] = useState(getHashParams())
     const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false)
     const [chats, setChats] = useState([])
+    const [user, setUser] = useState({})
 
     useEffect(() => {
         if (params.access_token) {
@@ -48,7 +49,7 @@ export default function App() {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/about">About</Link>
+            <Link to="/profile">Profile</Link>
           </li>
           <li>
             <Link to="/topics">Topics</Link>
@@ -59,8 +60,8 @@ export default function App() {
         </ul>
 
         <Switch>
-          <Route path="/about">
-            <About />
+          <Route path="/profile">
+            <Profile user={user} />
           </Route>
           <Route path="/topics">
             <Topics />
@@ -74,6 +75,7 @@ export default function App() {
                 params={params} 
                 loggedIn={loggedIn} 
                 addUserToChat={addUserToChat}
+                setProfileUser={setUser}
             />
           </Route>
         </Switch>
@@ -82,8 +84,12 @@ export default function App() {
   );
 }
 
-function About() {
-     return <h2>About</h2>;
+function Profile({ user }) {
+    return <div>
+        <h2>{user.name}</h2>
+        <h3>{user.email}</h3>
+        <img src={user.image} alt={user.name} />
+    </div>
 }
 
 function Topics() {

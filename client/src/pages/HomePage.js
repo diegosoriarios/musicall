@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 const DEFAULT_IMAGE = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
 const socket = openSocket('http://localhost:3210')
 
-function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat }) {
+function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat, setProfileUser }) {
 
 
   //const [params, setParams] = useState(getHashParams())
@@ -31,6 +31,11 @@ function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat }) {
       getNowPlaying()
     }*/
     setUser({
+      name: params.name,
+      email: params.email,
+      image: params.image
+    })
+    setProfileUser({
       name: params.name,
       email: params.email,
       image: params.image
