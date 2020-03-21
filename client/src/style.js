@@ -5,10 +5,13 @@ export const Navbar = styled.ul`
     bottom: 0;
     left: 0;
     position: fixed;
-    display: flex;
+    display: ${props => props.display};
     justify-content: space-around;
     align-items: center;
     width: 100%;
+    padding: 0;
+    background-color: #eee;
+    height: 50px;
 `
 
 export const NavbarItem = styled.li`

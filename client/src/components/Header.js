@@ -1,6 +1,5 @@
 import React from 'react'
 import { ArrowBack, MoreHoriz } from '@material-ui/icons';
-import '../App.css'
 
 function Header({ title }) {
     return (

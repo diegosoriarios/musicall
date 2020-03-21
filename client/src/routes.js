@@ -9,9 +9,10 @@ import {
 } from "react-router-dom";
 import Spotify from 'spotify-web-api-js'
 import HomePage from './pages/HomePage';
-import Chat from './pages/Chat';
-import Profile from './pages/Profile';
+import Chat from './pages/Chat/';
+import Profile from './pages/Profile/';
 import { Navbar, NavbarItem } from './style'
+import { Home, HomeOutlined, Person, PersonOutlined, Explore, ExploreOutlined, Mail, MailOutlined } from '@material-ui/icons';
 
 const spotifyWebApi = new Spotify()
 
@@ -21,6 +22,7 @@ export default function App() {
     const [loggedIn, setLoggedIn] = useState(params.access_token ? true : false)
     const [chats, setChats] = useState([])
     const [user, setUser] = useState({})
+    const [selected, setSelected] = useState("explore")
 
     useEffect(() => {
         if (params.access_token) {
@@ -46,18 +48,42 @@ export default function App() {
   return (
     <Router>
       <div style={{ margin: 0 }}>
-        <Navbar>
+        <Navbar display={loggedIn ? 'flex' : 'none'}>
           <NavbarItem>
-            <Link style={{ textDecoration: 'none' }} to="/">Home</Link>
+            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("home")} to="/topics">
+              {
+                selected === "home" ?
+                  <Home style={{ color: 'black' }} /> :
+                  <HomeOutlined style={{ color: 'black' }} />
+              }
+            </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link style={{ textDecoration: 'none' }} to="/profile">Profile</Link>
+            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("person")} to="/profile">
+              {
+                selected === "person" ?
+                  <Person style={{ color: 'black' }} /> :
+                  <PersonOutlined style={{ color: 'black' }} />
+              }
+            </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link style={{ textDecoration: 'none' }} to="/topics">Topics</Link>
+            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("explore")} to="/">
+              {
+                selected === "explore" ?
+                  <Explore style={{ color: 'black' }} /> :
+                  <ExploreOutlined style={{ color: 'black' }} />
+              }
+            </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link style={{ textDecoration: 'none' }} to="/chat">Chat</Link>
+            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("chat")} to="/chat">
+              {
+                selected === "chat" ?
+                  <Mail style={{ color: 'black' }} /> :
+                  <MailOutlined style={{ color: 'black' }} />
+              }
+            </Link>
           </NavbarItem>
         </Navbar>
 
