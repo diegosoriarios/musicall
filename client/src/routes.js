@@ -5,12 +5,14 @@ import {
   Route,
   Link,
   useRouteMatch,
-  useParams
+  useParams,
+  Redirect
 } from "react-router-dom";
 import Spotify from 'spotify-web-api-js'
 import HomePage from './pages/HomePage';
 import Chat from './pages/Chat/';
 import Profile from './pages/Profile/';
+import Feed from './pages/Feed/';
 import { Navbar, NavbarItem } from './style'
 import { Home, HomeOutlined, Person, PersonOutlined, Explore, ExploreOutlined, Mail, MailOutlined } from '@material-ui/icons';
 
@@ -45,12 +47,13 @@ export default function App() {
         return hashParams;
     }
     
+
   return (
     <Router>
       <div style={{ margin: 0 }}>
         <Navbar display={loggedIn ? 'flex' : 'none'}>
           <NavbarItem>
-            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("home")} to="/topics">
+            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("home")} to="/feed">
               {
                 selected === "home" ?
                   <Home style={{ color: 'black' }} /> :
@@ -89,13 +92,13 @@ export default function App() {
 
         <Switch>
           <Route path="/profile">
-            <Profile user={user} />
+            <Profile user={user} loggedIn={loggedIn} />
           </Route>
-          <Route path="/topics">
-            <Topics />
+          <Route path="/feed">
+            <Feed loggedIn={loggedIn} />
           </Route>
           <Route path="/chat">
-            <Chat chats={chats} />
+            <Chat chats={chats} loggedIn={loggedIn} />
           </Route>
           <Route path="/">
             <HomePage 
@@ -110,43 +113,4 @@ export default function App() {
       </div>
     </Router>
   );
-}
-
-function Topics() {
-  let match = useRouteMatch();
-
-  return (
-    <div>
-      <h2>Topics</h2>
-
-      <ul>
-        <li>
-          <Link to={`${match.url}/components`}>Components</Link>
-        </li>
-        <li>
-          <Link to={`${match.url}/props-v-state`}>
-            Props v. State
-          </Link>
-        </li>
-      </ul>
-
-      {/* The Topics page has its own <Switch> with more routes
-          that build on the /topics URL path. You can think of the
-          2nd <Route> here as an "index" page for all topics, or
-          the page that is shown when no topic is selected */}
-      <Switch>
-        <Route path={`${match.path}/:topicId`}>
-          <Topic />
-        </Route>
-        <Route path={match.path}>
-          <h3>Please select a topic.</h3>
-        </Route>
-      </Switch>
-    </div>
-  );
-}
-
-function Topic() {
-  let { topicId } = useParams();
-  return <h3>Requested topic ID: {topicId}</h3>;
 }

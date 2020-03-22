@@ -12,6 +12,7 @@ export const Navbar = styled.ul`
     padding: 0;
     background-color: #eee;
     height: 50px;
+    z-index: 5;
 `
 
 export const NavbarItem = styled.li`

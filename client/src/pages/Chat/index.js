@@ -1,8 +1,11 @@
 import React from 'react'
+import { useHistory } from 'react-router-dom';
 
-export default function Chat({ chats }) {
+export default function Chat({ chats, loggedIn }) {
 
-    console.log(chats)
+    const history = useHistory()
+
+    if (!loggedIn) history.push('/')
 
     return (
         <div style={{ backgroundColor: 'red' }}>
