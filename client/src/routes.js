@@ -27,10 +27,22 @@ export default function App() {
     const [selected, setSelected] = useState("explore")
 
     useEffect(() => {
-        if (params.access_token) {
-            spotifyWebApi.setAccessToken(params.access_token)
-        }
+      let cacheParams = JSON.parse(localStorage.getItem("params"))
+      if (cacheParams) {
+        setParams(cacheParams)
+        setLoggedIn(cacheParams.access_token ? true : false)
+      }
+      if (params.access_token) {
+        spotifyWebApi.setAccessToken(params.access_token)
+        localStorage.setItem("params", JSON.stringify(params))
+      }
     }, [])
+
+    function logout() {
+      localStorage.removeItem("params")
+      setLoggedIn(false)
+      setParams(false)
+    }
 
     function addUserToChat(user) {
         console.log(user)
@@ -92,7 +104,7 @@ export default function App() {
 
         <Switch>
           <Route path="/profile">
-            <Profile user={user} loggedIn={loggedIn} />
+            <Profile user={user} loggedIn={loggedIn} logout={logout} />
           </Route>
           <Route path="/feed">
             <Feed loggedIn={loggedIn} />
