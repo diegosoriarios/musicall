@@ -92,6 +92,7 @@ export const NewPostBox = styled.div`
 export const NewPostBoxTop = styled.div`
     flex-direction: row;
     display: flex;
+    margin-top: 2%;
 `
 
 export const NewPostBoxBottom = styled.div`
@@ -101,5 +102,15 @@ export const NewPostBoxBottom = styled.div`
 
 export const NewPostInput = styled.input`
     margin: 0 2%;
-    min-width: 75%;
+    flex: 2;
+    
+`
+
+export const NewPostBoxButton = styled.button`
+    margin: 2%;
+    width: 100px;
+    height: 25px;
+    background-color: #0f0;
+    border-radius: 25px;
+    color: white;
 `
