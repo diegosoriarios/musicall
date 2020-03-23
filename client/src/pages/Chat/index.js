@@ -1,5 +1,6 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom';
+import Header from '../../components/Header/';
 
 export default function Chat({ chats, loggedIn }) {
 
@@ -9,6 +10,7 @@ export default function Chat({ chats, loggedIn }) {
 
     return (
         <div style={{ backgroundColor: 'red' }}>
+            <Header title={'Chat'} />
             {chats && 
                 chats.map(chat => (
                     <h3>{chat}</h3>

@@ -1,8 +1,24 @@
-import React, { useState } from 'react'
-import { Post, Header, Content, Avatar, Username, Date, Likes, LikeText, Container, CreatePost } from './styles'
+import React, { useState, useEffect } from 'react'
+import { 
+  Post, 
+  FeedHeader, 
+  Content, 
+  Avatar, 
+  Username, 
+  Date, 
+  Likes, 
+  LikeText, 
+  Container, 
+  CreatePost,
+  NewPostBox,
+  NewPostInput,
+  NewPostBoxTop,
+  NewPostBoxBottom
+} from './styles'
 import { Favorite, FavoriteBorder, PostAdd } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import FlatList from 'flatlist-react';
+import Header from '../../components/Header/'
 
 const data = [{
     "id": 1,
@@ -216,18 +232,24 @@ const data = [{
     "created_at": "9/5/2019"
   }]
 
-export default function Feed({ loggedIn }) {
-  const [hasMorePeople, setMorePoeple] = useState(true)  
+export default function Feed({ loggedIn, user }) {
+  const [hasMorePeople, setMorePoeple] = useState(true)
+  const [isCreatingPost, setisCreatingPost] = useState(false)
+  const [content, setContent] = useState("")
   const history = useHistory()
+
+  useEffect(() => {
+    setisCreatingPost(false)
+  }, [])
 
     function renderPerson(post) {
       return (
         <Post key={post.id}>
-          <Header>
+          <FeedHeader>
               <Avatar src={post.avatar} alt={post.username} />
               <Username>{post.username}</Username>
               <Date>{post.created_at}</Date>
-          </Header>
+          </FeedHeader>
           <Content>
               <p>{post.content}</p>
               <Likes>
@@ -243,11 +265,59 @@ export default function Feed({ loggedIn }) {
 
     }
 
+    function openCreatePost() {
+      setisCreatingPost(true)
+    }
+
+    function getCurrentDate() {
+      let newDate = new window.Date()
+      let day = newDate.getDate();
+      let month = newDate.getMonth() + 1;
+      let year = newDate.getFullYear();
+      return `${day}/${month}/${year}`
+    }
+
+    function handleCreatePost() {
+      let post = {
+        "id": data.length + 1,
+        "username": user.name,
+        "content": content,
+        "avatar": user.image,
+        "likes": 0,
+        "created_at": getCurrentDate()
+      }
+      data.push(post)
+      setisCreatingPost(false)
+    }
+
     if (!loggedIn) history.push('/')
     
+    if (isCreatingPost) {
+      return (
+        <>
+          <Header title={'Create Post'} goBackActive={true} goBack={() => setisCreatingPost()} />
+          <NewPostBox>
+            <NewPostBoxTop>
+              <Avatar src={user.image} alt={user.name} />
+              <NewPostInput 
+                type="text" 
+                placeholder="Digite alguma coisa" 
+                value={content}
+                onChange={e=> setContent(e.target.value)}
+              />
+            </NewPostBoxTop>
+            <NewPostBoxBottom>
+              <button onClick={() => handleCreatePost()}>Criar</button>
+            </NewPostBoxBottom>
+          </NewPostBox>
+        </>
+      )
+    }
+
     return (
         <Container>
-          <CreatePost>
+          <Header title={'Feed'} />
+          <CreatePost onClick={() => openCreatePost()}>
             <PostAdd style={{ color: 'white' }} />
           </CreatePost>
           <FlatList 

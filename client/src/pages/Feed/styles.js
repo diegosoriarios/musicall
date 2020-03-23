@@ -9,14 +9,18 @@ export const Post = styled.div`
     position: relative;
 `
 
-export const Header = styled.div`
+export const FeedHeader = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-top: 2%;
 `
 
 export const Avatar = styled.img`
     margin-left: 25px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
 `
 
 export const Username = styled.h1`
@@ -72,4 +76,30 @@ export const CreatePost = styled.button`
     display: flex;
     justify-content: center;
     align-self: center;
+`
+
+export const NewPostBox = styled.div`
+    width: 96%;
+    margin: 0 auto;
+    background-color: #aaa;
+    border-radius: 15px;
+    margin: 2%;
+    padding: 2% 0;
+    display: flex;
+    flex-direction: column;
+`
+
+export const NewPostBoxTop = styled.div`
+    flex-direction: row;
+    display: flex;
+`
+
+export const NewPostBoxBottom = styled.div`
+    flex-direction: row-reverse;
+    display: flex;
+`
+
+export const NewPostInput = styled.input`
+    margin: 0 2%;
+    min-width: 75%;
 `

@@ -13,6 +13,8 @@ import {
   SimilarContainer
 } from './styles'
 
+import Header from '../../components/Header'
+
 //const spotifyWebApi = new Spotify()
 const DEFAULT_IMAGE = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
 const socket = openSocket('http://localhost:3210')
@@ -130,6 +132,7 @@ function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat, setProfileUs
   if (loggedIn) {
     return (
       <Container>
+        <Header title={'Home'} />
         <PlayerContainer>
           <MusicTitle> Now playing: { `${nowPlaying.band}-${nowPlaying.name}` }</MusicTitle>
           <div>

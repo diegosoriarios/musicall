@@ -1,4 +1,5 @@
 import React from 'react'
+import Header from '../../components/Header'
 import { useHistory } from 'react-router-dom';
 
 function Profile({ user, loggedIn, logout }) {
@@ -12,6 +13,7 @@ function Profile({ user, loggedIn, logout }) {
     if (!loggedIn) history.push('/')
 
     return <div>
+        <Header title={'Profile'} />
         <h2>{user.name}</h2>
         <h3>{user.email}</h3>
         <img src={user.image} alt={user.name} />

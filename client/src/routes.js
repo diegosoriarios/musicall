@@ -107,7 +107,7 @@ export default function App() {
             <Profile user={user} loggedIn={loggedIn} logout={logout} />
           </Route>
           <Route path="/feed">
-            <Feed loggedIn={loggedIn} />
+            <Feed loggedIn={loggedIn} user={user} />
           </Route>
           <Route path="/chat">
             <Chat chats={chats} loggedIn={loggedIn} />
