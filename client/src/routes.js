@@ -15,6 +15,7 @@ import Profile from './pages/Profile/';
 import Feed from './pages/Feed/';
 import { Navbar, NavbarItem } from './style'
 import { Home, HomeOutlined, Person, PersonOutlined, Explore, ExploreOutlined, Mail, MailOutlined } from '@material-ui/icons';
+import ChatPage from './components/ChatPage/index';
 
 const spotifyWebApi = new Spotify()
 
@@ -92,7 +93,7 @@ export default function App() {
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("chat")} to="/chat">
+            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("chat")} to="/chats">
               {
                 selected === "chat" ?
                   <Mail style={{ color: 'black' }} /> :
@@ -109,9 +110,10 @@ export default function App() {
           <Route path="/feed">
             <Feed loggedIn={loggedIn} user={user} />
           </Route>
-          <Route path="/chat">
+          <Route path="/chats">
             <Chat chats={chats} loggedIn={loggedIn} />
           </Route>
+          <Route path="/chat" component={ChatPage} />
           <Route path="/">
             <HomePage 
                 spotifyWebApi={spotifyWebApi} 

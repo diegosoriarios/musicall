@@ -126,7 +126,7 @@ function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat, setProfileUs
 
   function handleChatClick(u) {
     addUserToChat(u)
-    history.push('/chat')
+    history.push('/chats')
   }
 
   if (loggedIn) {
