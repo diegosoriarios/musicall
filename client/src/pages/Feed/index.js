@@ -32,7 +32,7 @@ export default function Feed({ loggedIn, user }) {
 
   async function loadFeed() {
     setLoading(true)
-    const response = await axios.get('http://localhost:8888/feed')
+    const response = await axios.get('http://localhost:4710/posts')
 
     const responseData = await response.data
 
@@ -94,7 +94,10 @@ export default function Feed({ loggedIn, user }) {
           "created_at": getCurrentDate()
         }
 
-        axios.post('http://localhost:8888/feed', post).then(response => {
+        //FIXME: change authorization
+        axios.post('http://localhost:4710/posts', post, {
+          headers: { Authorization: 'f61dd2e9' }
+        }).then(response => {
           loadFeed()
         }).catch(e => {
           console.log(e)
