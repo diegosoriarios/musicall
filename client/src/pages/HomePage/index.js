@@ -32,6 +32,9 @@ function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat, setProfileUs
   let history = useHistory();
 
   useEffect(() => {
+    if (params.access_token) {
+      spotifyWebApi.setAccessToken(params.access_token)
+    }
     /*
     if (params.access_token) {
       spotifyWebApi.setAccessToken(params.access_token)
@@ -60,18 +63,11 @@ function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat, setProfileUs
     })
   }, [])
 
-  /*function getHashParams() {
-    var hashParams = {};
-    var e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
-    while ( e = r.exec(q)) {
-       hashParams[e[1]] = decodeURIComponent(e[2]);
-    }
-    return hashParams;
-  }*/
+  useEffect(() => {
+    getNowPlaying()
+  }, [user])
 
-  function getNowPlaying() {    
-    
+  function getNowPlaying() {
     spotifyWebApi.getMyCurrentPlaybackState()
     .then(response => {
       if(response.item) {
@@ -126,7 +122,15 @@ function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat, setProfileUs
 
   function handleChatClick(u) {
     addUserToChat(u)
-    history.push('/chats')
+    let name = user.name
+    let room = u + '-' + user.name
+    history.push(`/chat?name=${name}&room=${room}`)
+  }
+
+  function openChat() {
+    let name = user.name
+    let room = nowPlaying.band + '-' + nowPlaying.name
+    history.push(`/chat?name=${name}&room=${room}`)
   }
 
   if (loggedIn) {
@@ -141,6 +145,10 @@ function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat, setProfileUs
           <MusicButton onClick={() => getNowPlaying()}>
             Check Now Playing
           </MusicButton>
+          {nowPlaying.band != '' ? 
+            <MusicButton onClick={() => openChat()}>Message</MusicButton>
+            : null
+          }
         </PlayerContainer>
         <SimilarContainer className="page-center">
           <h2>{similar.name}</h2>

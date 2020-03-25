@@ -32,6 +32,12 @@ export default function App() {
       if (cacheParams) {
         setParams(cacheParams)
         setLoggedIn(cacheParams.access_token ? true : false)
+        spotifyWebApi.setAccessToken(cacheParams.access_token)
+        setUser({
+          name: cacheParams.name,
+          email: cacheParams.email,
+          image: cacheParams.image
+        })
       }
       if (params.access_token) {
         spotifyWebApi.setAccessToken(params.access_token)
