@@ -1,8 +1,8 @@
 import React from 'react'
-import { Container, BackButton } from './styles'
-import { ArrowBack, MoreHoriz } from '@material-ui/icons';
+import { Container, BackButton, RightButton } from './styles'
+import { ArrowBack } from '@material-ui/icons';
 
-function Header({ title, goBackActive=false, goBack }) {
+function Header({ title, goBackActive=false, goBack, children = null }) {
     return (
         <Container>
             {goBackActive ? 
@@ -10,8 +10,9 @@ function Header({ title, goBackActive=false, goBack }) {
                     <ArrowBack style={{ color: 'white' }} />
                 </BackButton> : null}
             <h2 style={{ color: 'white' }}>{title}</h2>
-            {//<MoreHoriz style={{ color: 'white' }} />
-            }
+            <RightButton>
+                {children}
+            </RightButton>
         </Container>
     )
 }

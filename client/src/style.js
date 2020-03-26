@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { customColors } from './assets/colors';
 
 export const Navbar = styled.ul`
     margin: 0;
@@ -17,5 +18,5 @@ export const Navbar = styled.ul`
 
 export const NavbarItem = styled.li`
     list-style: none;
-    color: black;
+    color: ${customColors.black};
 `

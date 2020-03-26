@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { customColors } from '../../assets/colors'
+
 export const Post = styled.div`
     width: 96%;
     margin: 1%;
@@ -59,7 +61,7 @@ export const Container = styled.div`
     flex-direction: column;
     width: 100%;
     margin: 0;
-    background-color: #ccc;
+    background-color: grey;
     align-self: center;
     position: relative;
 `
@@ -67,15 +69,17 @@ export const Container = styled.div`
 export const CreatePost = styled.button`
     width: 75px;
     height: 75px;
-    background-color: #0f0;
+    background-color: ${customColors.green};
     border-radius: 50%;
     position: fixed;
-    bottom: 50px;
-    right: 10px;
+    bottom: 75px;
+    right: 25px;
     z-index: 5;
     display: flex;
     justify-content: center;
     align-self: center;
+    outline: none;
+    border: 0;
 `
 
 export const NewPostBox = styled.div`
@@ -110,7 +114,7 @@ export const NewPostBoxButton = styled.button`
     margin: 2%;
     width: 100px;
     height: 25px;
-    background-color: #0f0;
+    background-color: ${customColors.green};
     border-radius: 25px;
     color: white;
 `

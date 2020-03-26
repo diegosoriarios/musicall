@@ -138,6 +138,7 @@ export default function Feed({ loggedIn, user }) {
           <CreatePost onClick={() => openCreatePost()}>
             <PostAdd style={{ color: 'white' }} />
           </CreatePost>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <FlatList 
             style={{ zIndex: -1 }}
                 list={data} 
@@ -147,6 +148,8 @@ export default function Feed({ loggedIn, user }) {
                 paginationLoadingIndicator={<Loader/>}
                 paginationLoadingIndicatorPosition="center"
           />
+          </div>
+
         </Container>
     )
 }

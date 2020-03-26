@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { customColors } from '../../assets/colors';
+
 export const Form = styled.form`
     display: flex;
     border-top: 2px solid #D3D3D3;
@@ -14,7 +16,7 @@ export const TextInput = styled.input`
 `
 
 export const Button = styled.button`
-    color: #fff !important;
+    color: ${customColors.black} !important;
     text-transform: uppercase;
     text-decoration: none;
     background: #2979FF;

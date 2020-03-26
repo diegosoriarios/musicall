@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { customColors } from '../../assets/colors';
+
 export const JoinInnerContainer = styled.div`
     width: 20%;
 `
@@ -18,7 +20,7 @@ export const JoinInput = styled.input`
 `
 
 export const Button = styled.button`
-    color: #fff !important;
+    color: ${customColors.black} !important;
     text-transform: uppercase;
     text-decoration: none;
     background: #2979FF;

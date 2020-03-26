@@ -10,7 +10,10 @@ import {
   MusicImage,
   MusicTitle,
   MusicButton,
-  SimilarContainer
+  SimilarContainer,
+  LoginImage,
+  LoginText,
+  LoginTitle
 } from './styles'
 
 import Header from '../../components/Header'
@@ -167,9 +170,13 @@ function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat, setProfileUs
     )
   } else {
     return (
-      <LoginContainer>
-        <a href="http://localhost:8888">
-          <LoginButton className="login-btn">Login with spotify</LoginButton>
+      <LoginContainer image={require('../../assets/login.svg')} >
+        <LoginTitle>Hearing</LoginTitle>
+        <a style={{ textDecoration: 'none' }} href="http://localhost:8888">
+          <LoginButton className="login-btn">
+            <LoginImage src={require('../../assets/spotify-brands.svg')}/>
+            <LoginText>Login with spotify</LoginText>
+          </LoginButton>
         </a>
       </LoginContainer>
     );

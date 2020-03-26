@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { customColors } from '../../assets/colors';
 
 export const OuterContainer = styled.div`
     display: flex;
@@ -12,7 +13,7 @@ export const Container = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: #FFFFFF;
+    background: ${customColors.black};
     border-radius: 8px;
     height: 60%;
     width: 90%;
