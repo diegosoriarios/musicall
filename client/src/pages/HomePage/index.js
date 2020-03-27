@@ -13,10 +13,12 @@ import {
   SimilarContainer,
   LoginImage,
   LoginText,
-  LoginTitle
+  LoginTitle,
+  LoginLogo
 } from './styles'
 
 import Header from '../../components/Header'
+import logoImg from '../../assets/logo.png'
 
 //const spotifyWebApi = new Spotify()
 const DEFAULT_IMAGE = 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
@@ -171,7 +173,7 @@ function HomePage({ spotifyWebApi, params, loggedIn, addUserToChat, setProfileUs
   } else {
     return (
       <LoginContainer image={require('../../assets/login.svg')} >
-        <LoginTitle>Hearing</LoginTitle>
+        <LoginLogo src={logoImg} alt="LogoImg" />
         <a style={{ textDecoration: 'none' }} href="http://localhost:8888">
           <LoginButton className="login-btn">
             <LoginImage src={require('../../assets/spotify-brands.svg')}/>

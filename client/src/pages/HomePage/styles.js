@@ -21,6 +21,12 @@ export const LoginImage = styled.img`
     height: 25px;
 `
 
+export const LoginLogo = styled.img`
+    width: 30%;
+    position: absolute;
+    top: 15%;
+`
+
 export const LoginText = styled.h4`
     height: 25px;
     margin: 0;
