@@ -13,8 +13,7 @@ import HomePage from './pages/HomePage';
 import Chat from './pages/Chat/';
 import Profile from './pages/Profile/';
 import Feed from './pages/Feed/';
-import { Navbar, NavbarItem } from './style'
-import { Home, HomeOutlined, Person, PersonOutlined, Explore, ExploreOutlined, Mail, MailOutlined } from '@material-ui/icons';
+import { IconImage, Navbar, NavbarIcons, NavbarItem, NavbarHeader, HeaderText, LinkText } from './style'
 import ChatPage from './components/ChatPage/index';
 
 const spotifyWebApi = new Spotify()
@@ -71,42 +70,32 @@ export default function App() {
     <Router>
       <div style={{ margin: 0 }}>
         <Navbar display={loggedIn ? 'flex' : 'none'}>
-          <NavbarItem>
-            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("home")} to="/feed">
-              {
-                selected === "home" ?
-                  <Home style={{ color: 'black' }} /> :
-                  <HomeOutlined style={{ color: 'black' }} />
-              }
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("person")} to="/profile">
-              {
-                selected === "person" ?
-                  <Person style={{ color: 'black' }} /> :
-                  <PersonOutlined style={{ color: 'black' }} />
-              }
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("explore")} to="/">
-              {
-                selected === "explore" ?
-                  <Explore style={{ color: 'black' }} /> :
-                  <ExploreOutlined style={{ color: 'black' }} />
-              }
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link style={{ textDecoration: 'none' }} onClick={() => setSelected("chat")} to="/chats">
-              {
-                selected === "chat" ?
-                  <Mail style={{ color: 'black' }} /> :
-                  <MailOutlined style={{ color: 'black' }} />
-              }
-            </Link>
-          </NavbarItem>
+          <NavbarHeader>
+            <IconImage src={require('./assets/icon.png')} alt="icon" />
+            <HeaderText>Musicall</HeaderText>
+          </NavbarHeader>
+          <NavbarIcons>
+            <NavbarItem>
+              <Link style={{ textDecoration: "none" }} onClick={() => setSelected("home")} to="/feed">
+                <LinkText selected={selected == "home"}>Home</LinkText>
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link style={{ textDecoration: "none" }} onClick={() => setSelected("person")} to="/profile">
+                <LinkText selected={selected == "person"}>Profile</LinkText>
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link style={{ textDecoration: "none" }} onClick={() => setSelected("explore")} to="/">
+                <LinkText selected={selected == "explore"}>Listening</LinkText>
+              </Link>
+            </NavbarItem>
+            <NavbarItem>
+              <Link style={{ textDecoration: "none" }} onClick={() => setSelected("chat")} to="/chats">
+                <LinkText selected={selected == "chat"}>messages</LinkText>
+              </Link>
+            </NavbarItem>
+          </NavbarIcons>
         </Navbar>
 
         <Switch>
