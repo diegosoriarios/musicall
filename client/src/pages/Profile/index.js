@@ -15,15 +15,13 @@ function Profile({ user, loggedIn, logout }) {
     if (!loggedIn) history.push('/')
 
     return <div>
-        <Header title={'Profile'}>
-            <PowerSettingsNew style={{ color: 'white' }} onClick={handleLogout} />
-        </Header>
         <Container>
             <Avatar src={user.image} alt={user.name} />
             <InfoContainer>
                 <InfoContainerName>{user.name}</InfoContainerName>
                 <InfoContainerEmail>{user.email}</InfoContainerEmail>
             </InfoContainer>
+            <PowerSettingsNew style={{ color: 'black' }} onClick={handleLogout} />
         </Container>
         <ProfileInfo>
             <p>Posts: 0</p>
