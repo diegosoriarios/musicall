@@ -173,33 +173,41 @@ console.log('Listening on 8888');
 
 let clients = {}
 
+const userAlreadyOnList = (band, name, user) => clients && clients[band] && clients[band][name] && clients[band][name].users.includes(user)
+
 socket.socket.on('connection', (client) => {
-  console.log('a user connected');
+  console.log('LOGIN - a user connected');
 
   client.on("new_music", music => {
     const { band, name, user } = music
-
-    console.log(music)
     
     if (band in clients) {
       if (name in clients[band]) {
-        clients[band][name].users = [...clients[band][name].users, user]
+        if (!user) return;
+        if (!userAlreadyOnList(band, name, user))
+          clients[band][name].users = [...clients[band][name].users, user]
       } else {
-        clients[band] = {
-          [name]: {
-            users: [user]
+        if (!user) return;
+        if (!userAlreadyOnList(band, name, user))
+          clients[band] = {
+            [name]: {
+              users: [user]
+            }
           }
-        }
       }
     } else {
-      clients = {
-        [band]: {
-          [name]: {
-            users: [user]
+      if (!user) return;
+      if (!userAlreadyOnList(band, name, user))
+        clients = {
+          [band]: {
+            [name]: {
+              users: [user]
+            }
           }
         }
-      }
     }
+
+    console.log(clients[band][name])
 
     client.emit('update_list', clients)
   })

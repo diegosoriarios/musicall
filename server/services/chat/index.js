@@ -18,6 +18,12 @@ io.on('connection', socket => {
 
         if (error) return callback(error)
 
+        const userAlreadyIsInTheRoom = getUsersInRoom(room).some(userInARoom => userInARoom == user.name)
+
+        console.log(getUsersInRoom(room));
+
+        if (userAlreadyIsInTheRoom) return;
+
         socket.emit('message', { user: 'admin', text: `${user.name}, welcome to the room ${user.room}`})
         socket.broadcast.to(user.room).emit("message", { user: 'admin', text: `${user.name}, has joined!`})
 

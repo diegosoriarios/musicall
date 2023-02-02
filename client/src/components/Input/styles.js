@@ -4,13 +4,13 @@ import { customColors } from '../../assets/colors';
 
 export const Form = styled.form`
     display: flex;
-    border-top: 2px solid #D3D3D3;
+    max-height: 70px;
 `
 
 export const TextInput = styled.input`
     border: none;
     border-radius: 0;
-    padding: 5%;
+    padding: 12px;
     width: 80%;
     font-size: 1.2em;
 `
@@ -19,7 +19,7 @@ export const Button = styled.button`
     color: ${customColors.black} !important;
     text-transform: uppercase;
     text-decoration: none;
-    background: #2979FF;
+    background: ${customColors.green};
     padding: 20px;
     display: inline-block;
     border: none;

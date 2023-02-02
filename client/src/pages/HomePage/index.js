@@ -87,7 +87,7 @@ function HomePage({
     const playbackState = await spotifyWebApi.getMyCurrentPlaybackState();
 
     const artist = await spotifyWebApi.getArtist(
-      playbackState.item.artists[0].id
+      playbackState.item?.artists[0].id
     );
 
     console.log(artist.images);
@@ -186,7 +186,7 @@ function HomePage({
           </button>
         </SimilarContainer>
         {list &&
-          list.map((u, i) => {
+          list?.map((u, i) => {
             //if (u != user.name) {
             return (
               <button key={i} onClick={() => handleChatClick(u)}>
