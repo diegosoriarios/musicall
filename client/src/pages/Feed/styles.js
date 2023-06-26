@@ -117,4 +117,5 @@ export const NewPostBoxButton = styled.button`
     background-color: ${customColors.green};
     border-radius: 25px;
     color: white;
+    border: none;
 `
