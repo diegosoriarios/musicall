@@ -24,7 +24,6 @@ import Header from '../../components/Header/'
 
 export default function Feed({ loggedIn, user }) {
   const [hasMorePeople, setMorePeople] = useState(true)
-  const [isCreatingPost, setisCreatingPost] = useState(false)
   const [content, setContent] = useState("")
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(true)
@@ -43,7 +42,6 @@ export default function Feed({ loggedIn, user }) {
   }
 
   useEffect(() => {
-    setisCreatingPost(false)
 
     loadFeed()
   }, [])
@@ -69,10 +67,6 @@ export default function Feed({ loggedIn, user }) {
 
     function fetchPeople() {
 
-    }
-
-    function openCreatePost() {
-      setisCreatingPost(true)
     }
 
     function getCurrentDate() {
@@ -102,18 +96,16 @@ export default function Feed({ loggedIn, user }) {
         }).catch(e => {
           console.log(e)
         })
-        setisCreatingPost(false)
       }
     }
 
     if (!loggedIn) history.push('/')
 
     if (loading) return <h1>Loading</h1>
-    
-    if (isCreatingPost) {
-      return (
-        <>
-          <Header title={'Create Post'} goBackActive={true} goBack={() => setisCreatingPost()} />
+
+    return (
+        <Container>
+          <Header title={'Feed'} />
           <NewPostBox>
             <NewPostBoxTop>
               <Avatar src={user.image} alt={user.name} />
@@ -128,16 +120,6 @@ export default function Feed({ loggedIn, user }) {
               <NewPostBoxButton onClick={() => handleCreatePost()}>Criar</NewPostBoxButton>
             </NewPostBoxBottom>
           </NewPostBox>
-        </>
-      )
-    }
-
-    return (
-        <Container>
-          <Header title={'Feed'} />
-          <CreatePost onClick={() => openCreatePost()}>
-            <PostAdd style={{ color: 'white' }} />
-          </CreatePost>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <FlatList 
             style={{ zIndex: -1 }}
