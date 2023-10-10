@@ -1,0 +1,109 @@
+@use "../../app/variables.module" as colors;
+
+.login-container {
+  display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background: colors.$black;
+    margin: 0;
+}
+
+.login-image {
+  height: 25px;
+}
+
+.login-background {
+  height: 50vh;
+}
+
+.login-logo {
+  width: 10vw;
+  top: 15%;
+}
+
+.login-text {
+  height: 25px;
+  margin: 0;
+  color: colors.$primary-color;
+  text-decoration: none;
+  line-height: 25px;
+}
+
+.login-title {
+  color: colors.$white;
+  position: absolute;
+  top: 15%;
+}
+
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: colors.$primary-color;
+  width: 250px;
+  height: 50px;
+  border-radius: 100px;
+  color: colors.$white;
+  outline: none;
+  border: none;
+}
+
+.player-container {
+  height: 40vh;
+  background-color: black;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position-y: -300px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+};
+
+.music-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  background-color: #ccc;
+}
+
+.music-title {
+  color: colors.$white;
+  margin-bottom: 3%;
+  font-size: 18px;
+  z-index: 5;
+}
+
+.music-button {
+  background-color: colors.$primary-color;
+  width: 150px;
+  height: 25px;
+  border-radius: 100px;
+  color: colors.$white;
+  margin-top: 3%;
+  outline: none;
+  border: none;
+}
+
+.similar-container {
+  height: 20vh;
+  background-color: colors.$primary-color;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  border-top: 50px solid colors.$primary-color;
+  margin-top: -50px;
+}
