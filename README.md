@@ -58,11 +58,13 @@ musicall/
 
 - Node.js 22 (`.nvmrc`); Node 20.19+ also works for the runtime, but the lint/test toolchain expects a current 20.x or 22.13+.
 - npm 10+.
-- A [Spotify developer app](https://developer.spotify.com/dashboard) with this redirect URI registered:
+- A [Spotify developer app](https://developer.spotify.com/dashboard) with this redirect URI registered exactly:
 
   ```text
-  http://localhost:3001/api/auth/callback
+  http://127.0.0.1:3001/api/auth/callback
   ```
+
+  Spotify rejects `localhost` redirect URIs and requires an explicit loopback IP such as `127.0.0.1`.
 
 ## Getting started
 
@@ -79,7 +81,16 @@ musicall/
    cp server/.env.example server/.env
    ```
 
-   Fill in `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, and a long random `JWT_SECRET`. The remaining defaults are fine for local development.
+   Fill in `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`, and a long random `JWT_SECRET`.
+
+   For local Spotify authentication, set the loopback URLs explicitly:
+
+   ```env
+   CLIENT_URL=http://127.0.0.1:5173
+   SERVER_URL=http://127.0.0.1:3001
+   ```
+
+   Spotify does not allow `localhost` redirect URIs. Use `127.0.0.1` consistently for local development because cookies and CORS treat it as a different origin from `localhost`.
 
 3. Optionally create the client environment file. Leave `VITE_API_URL` empty to use the Vite dev proxy:
 
@@ -93,9 +104,9 @@ musicall/
    npm run dev
    ```
 
-   - Client: <http://localhost:5173>
-   - API: <http://localhost:3001>
-   - Health check: <http://localhost:3001/api/health>
+   - Client: <http://127.0.0.1:5173>
+   - API: <http://127.0.0.1:3001>
+   - Health check: <http://127.0.0.1:3001/api/health>
 
    Database migrations run automatically when the server starts.
 
@@ -103,16 +114,16 @@ musicall/
 
 ### Server (`server/.env`)
 
-| Variable                | Required | Default                 | Description                                            |
-| ----------------------- | -------- | ----------------------- | ------------------------------------------------------ |
-| `NODE_ENV`              | no       | `development`           | `development`, `test`, or `production`.                |
-| `PORT`                  | no       | `3001`                  | API port.                                              |
-| `CLIENT_URL`            | no       | `http://localhost:5173` | CORS origin and OAuth redirect target.                 |
-| `SERVER_URL`            | no       | `http://localhost:3001` | Public API URL used to build the Spotify redirect URI. |
-| `SPOTIFY_CLIENT_ID`     | yes      | —                       | Spotify app client ID.                                 |
-| `SPOTIFY_CLIENT_SECRET` | yes      | —                       | Spotify app client secret.                             |
-| `JWT_SECRET`            | yes      | —                       | Session signing secret, at least 16 characters.        |
-| `DB_FILENAME`           | no       | `./db.sqlite3`          | SQLite file, relative to the `server` folder.          |
+| Variable                | Required | Default                 | Description                                                                                 |
+| ----------------------- | -------- | ----------------------- | ------------------------------------------------------------------------------------------- |
+| `NODE_ENV`              | no       | `development`           | `development`, `test`, or `production`.                                                     |
+| `PORT`                  | no       | `3001`                  | API port.                                                                                   |
+| `CLIENT_URL`            | no       | `http://localhost:5173` | CORS origin and OAuth redirect target. Use `http://127.0.0.1:5173` for local Spotify auth.  |
+| `SERVER_URL`            | no       | `http://localhost:3001` | Public API URL used to build the Spotify redirect URI. Use `http://127.0.0.1:3001` locally. |
+| `SPOTIFY_CLIENT_ID`     | yes      | —                       | Spotify app client ID.                                                                      |
+| `SPOTIFY_CLIENT_SECRET` | yes      | —                       | Spotify app client secret.                                                                  |
+| `JWT_SECRET`            | yes      | —                       | Session signing secret, at least 16 characters.                                             |
+| `DB_FILENAME`           | no       | `./db.sqlite3`          | SQLite file, relative to the `server` folder.                                               |
 
 ### Client (`client/.env`)
 
@@ -168,6 +179,7 @@ Socket.IO connections reuse the same session cookie and reject unauthenticated c
 - Build with `npm run build`; serve `client/dist` from a static host or reverse proxy.
 - Run the API with `npm start` after setting production environment variables.
 - Prefer serving the client and API from the same origin so the session cookie works without cross-site configuration.
+- Register and use an exact HTTPS redirect URI in production. Spotify allows HTTP only for explicit loopback addresses such as `127.0.0.1`.
 - Set `NODE_ENV=production` to enable secure cookies.
 - SQLite is fine for a single instance. Use a shared database before scaling the API horizontally.
 

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { env } from '../src/config/env.js'
 import { db } from '../src/database/connection.js'
 import { decryptToken, encryptToken } from '../src/modules/auth/tokenCrypto.js'
+import { SpotifyApiError } from '../src/modules/auth/spotify.client.js'
 import { encryptLegacyRefreshTokens } from '../src/modules/auth/user.service.js'
 import { logError, redact } from '../src/utils/safeLog.js'
 import { createUser } from './helpers.js'
@@ -65,5 +66,36 @@ describe('safe logging', () => {
     const logged = JSON.stringify(spy.mock.calls)
     expect(logged).not.toContain(env.SPOTIFY_CLIENT_SECRET)
     expect(logged).toContain('[REDACTED]')
+  })
+
+  it('logs Spotify API diagnostics without leaking credentials', () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    const error = new SpotifyApiError('Spotify profile request failed', {
+      method: 'GET',
+      endpoint: 'https://api.spotify.com/v1/me',
+      status: 403,
+      statusText: 'Forbidden',
+      requestId: 'spotify-request-123',
+      responseBody: {
+        error: {
+          status: 403,
+          message: 'User not registered in the Developer Dashboard',
+          diagnosticEmail: 'user@example.com',
+        },
+        access_token: 'secret-access-token',
+      },
+    })
+
+    logError('Spotify auth callback failed', error)
+
+    const logged = JSON.stringify(spy.mock.calls)
+    expect(logged).toContain('SpotifyApiError')
+    expect(logged).toContain('https://api.spotify.com/v1/me')
+    expect(logged).toContain('403')
+    expect(logged).toContain('spotify-request-123')
+    expect(logged).toContain('User not registered in the Developer Dashboard')
+    expect(logged).not.toContain('user@example.com')
+    expect(logged).not.toContain('secret-access-token')
+    expect(logged).toContain('[REDACTED_EMAIL]')
   })
 })
