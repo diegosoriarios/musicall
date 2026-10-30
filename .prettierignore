@@ -1,0 +1,12 @@
+node_modules/
+dist/
+build/
+coverage/
+package-lock.json
+*.sqlite3
+*.sqlite
+*.db
+*.png
+*.ico
+*.svg
+client/public/
