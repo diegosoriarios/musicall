@@ -55,3 +55,47 @@ export const CloseIcon = createIcon(
 )
 
 export const SendIcon = createIcon('Send', 'M2.01 21L23 12 2.01 3 2 10l15 2-15 2z')
+
+export const HeadphonesIcon = createIcon(
+  'Headphones',
+  'M12 1a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2a7 7 0 0 1 14 0v2h-4v8h3c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z',
+)
+
+export const FeedIcon = createIcon('Feed', 'M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h10v2H4v-2z')
+
+export const ChatIcon = createIcon(
+  'Chat',
+  'M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z',
+)
+
+export const UserIcon = createIcon(
+  'User',
+  'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z',
+)
+
+export const RefreshIcon = createIcon(
+  'Refresh',
+  'M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z',
+)
+
+export const SparklesIcon = createIcon(
+  'Sparkles',
+  'M19 9l1.25-2.75L23 5l-2.75-1.25L19 1l-1.25 2.75L15 5l2.75 1.25L19 9zm-7.5.5L9 4 6.5 9.5 1 12l5.5 2.5L9 20l2.5-5.5L17 12l-5.5-2.5zM19 15l-1.25 2.75L15 19l2.75 1.25L19 23l1.25-2.75L23 19l-2.75-1.25L19 15z',
+)
+
+export const ArrowLeftIcon = createIcon(
+  'ArrowLeft',
+  'M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z',
+)
+
+export const LogOutIcon = createIcon(
+  'LogOut',
+  'M10 17l5-5-5-5v3H2v4h8v3zm9-14h-7v2h7v14h-7v2h7c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z',
+)
+
+export const UsersIcon = createIcon(
+  'Users',
+  'M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z',
+)
+
+export const PlayIcon = createIcon('Play', 'M8 5v14l11-7z')

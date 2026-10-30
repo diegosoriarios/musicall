@@ -1,39 +1,74 @@
 import { useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { customColors } from '../assets/colors'
 import { useAuth } from '../auth/AuthContext'
 import { socket } from '../sockets/socket'
 import type { ChatMessage } from '../types'
+import { Button } from './ui/Button'
+import { ErrorBanner } from './ui/ErrorBanner'
+import { EmptyState } from './ui/EmptyState'
 import InfoBar from './InfoBar'
 import Input from './Input'
 import Messages from './Messages'
+import { ArrowLeftIcon, ChatIcon } from './icons'
 
-const OuterContainer = styled.div`
+const Shell = styled.div`
   display: flex;
+  height: 100dvh;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #1a1a1d;
+  padding: ${({ theme }) => theme.space.lg}px;
+  background: ${({ theme }) => theme.colors.bg};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: 0;
+  }
 `
 
-const Container = styled.div`
+const Panel = styled.section`
   display: flex;
+  width: min(980px, 100%);
+  height: 100%;
+  min-height: 0;
   flex-direction: column;
-  justify-content: space-between;
-  background: ${customColors.black};
-  border-radius: 8px;
-  height: 60%;
-  width: 90%;
+  overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.xl};
+  background: ${({ theme }) => theme.colors.surface};
+  box-shadow: ${({ theme }) => theme.shadows.floating};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+  }
+`
+
+const ErrorWrap = styled.div`
+  padding: ${({ theme }) => theme.space.md}px;
+`
+
+const EmptyPanel = styled(Panel)`
+  align-items: center;
+  justify-content: center;
+  padding: ${({ theme }) => theme.space.lg}px;
+  text-align: center;
+`
+
+const EmptyActions = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.space.sm}px;
+  justify-content: center;
 `
 
 export default function ChatPage() {
   const [searchParams] = useSearchParams()
   const room = searchParams.get('room') ?? ''
   const { user } = useAuth()
+  const navigate = useNavigate()
 
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [message, setMessage] = useState('')
+  const [joinError, setJoinError] = useState('')
   const messagesRef = useRef<ChatMessage[]>([])
 
   useEffect(() => {
@@ -41,10 +76,11 @@ export default function ChatPage() {
 
     setMessages([])
     messagesRef.current = []
+    setJoinError('')
 
     socket.emit('chat:join', { room }, (response: { error?: string } | undefined) => {
       if (response?.error) {
-        console.warn('Failed to join room:', response.error)
+        setJoinError(response.error)
       }
     })
 
@@ -73,19 +109,41 @@ export default function ChatPage() {
 
   if (!room) {
     return (
-      <OuterContainer>
-        <p style={{ color: 'white' }}>No room specified.</p>
-      </OuterContainer>
+      <Shell>
+        <EmptyPanel>
+          <EmptyState
+            icon={<ChatIcon />}
+            title="No room specified."
+            description="Choose a room from the messages screen or open a chat from someone who is listening."
+            action={
+              <EmptyActions>
+                <Button
+                  variant="secondary"
+                  leftIcon={<ArrowLeftIcon />}
+                  onClick={() => navigate('/chats')}
+                >
+                  Back to messages
+                </Button>
+              </EmptyActions>
+            }
+          />
+        </EmptyPanel>
+      </Shell>
     )
   }
 
   return (
-    <OuterContainer>
-      <Container>
+    <Shell>
+      <Panel aria-label={`Chat room ${room}`}>
         <InfoBar room={room} />
+        {joinError ? (
+          <ErrorWrap>
+            <ErrorBanner message={joinError} />
+          </ErrorWrap>
+        ) : null}
         <Messages messages={messages} currentUsername={user?.username ?? ''} />
         <Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
-      </Container>
-    </OuterContainer>
+      </Panel>
+    </Shell>
   )
 }

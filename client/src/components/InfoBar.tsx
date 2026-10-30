@@ -1,33 +1,86 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { customColors } from '../assets/colors'
-import { CloseIcon, MusicNoteIcon } from './icons'
+import { Badge } from './ui/Badge'
+import { ArrowLeftIcon, ChatIcon } from './icons'
 
-const InfoBarContainer = styled.div`
+const Bar = styled.header`
   display: flex;
+  min-height: 64px;
   align-items: center;
-  justify-content: space-between;
-  background: ${customColors.green};
-  border-radius: 4px;
-  width: 100%;
-  padding: 5% 5% 5% 5%;
+  gap: ${({ theme }) => theme.space.md}px;
+  padding: 0 ${({ theme }) => theme.space.md}px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.surface};
 `
 
-const LeftInnerContainer = styled.div`
-  display: flex;
+const BackLink = styled(Link)`
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
   align-items: center;
-  color: ${customColors.black};
-  margin-right: 10px;
+  justify-content: center;
+  border-radius: 50%;
+  color: ${({ theme }) => theme.colors.textMuted};
+  text-decoration: none;
+  transition:
+    background ${({ theme }) => theme.transitions.fast},
+    color ${({ theme }) => theme.transitions.fast};
 
-  h3 {
-    margin: 0 0 0 10px;
+  &:hover {
+    background: ${({ theme }) => theme.colors.surfaceHover};
+    color: ${({ theme }) => theme.colors.text};
+  }
+
+  svg {
+    width: 21px;
+    height: 21px;
   }
 `
 
-const RightInnerContainer = styled.div`
+const RoomInfo = styled.div`
   display: flex;
+  min-width: 0;
+  flex: 1;
   align-items: center;
-  color: ${customColors.black};
+  gap: ${({ theme }) => theme.space.sm}px;
+`
+
+const RoomIcon = styled.span`
+  display: inline-flex;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.colors.accentSoft};
+  color: ${({ theme }) => theme.colors.accentHover};
+  flex: none;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+`
+
+const RoomCopy = styled.div`
+  min-width: 0;
+`
+
+const RoomName = styled.h2`
+  overflow: hidden;
+  margin: 0;
+  color: ${({ theme }) => theme.colors.text};
+  font-size: ${({ theme }) => theme.font.sizes.sm};
+  font-weight: ${({ theme }) => theme.font.weights.semibold};
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+
+const RoomMeta = styled.p`
+  margin: 2px 0 0;
+  color: ${({ theme }) => theme.colors.textFaint};
+  font-size: ${({ theme }) => theme.font.sizes.xs};
 `
 
 interface InfoBarProps {
@@ -35,17 +88,23 @@ interface InfoBarProps {
 }
 
 export default function InfoBar({ room }: InfoBarProps) {
+  const isDirect = room.startsWith('dm:')
+
   return (
-    <InfoBarContainer>
-      <LeftInnerContainer>
-        <MusicNoteIcon />
-        <h3>{room}</h3>
-      </LeftInnerContainer>
-      <RightInnerContainer>
-        <Link to="/chats" aria-label="Close chat">
-          <CloseIcon />
-        </Link>
-      </RightInnerContainer>
-    </InfoBarContainer>
+    <Bar>
+      <BackLink to="/chats" aria-label="Back to messages">
+        <ArrowLeftIcon />
+      </BackLink>
+      <RoomIcon aria-hidden="true">
+        <ChatIcon />
+      </RoomIcon>
+      <RoomInfo>
+        <RoomCopy>
+          <RoomName>{room}</RoomName>
+          <RoomMeta>{isDirect ? 'Private conversation' : 'Public room'}</RoomMeta>
+        </RoomCopy>
+        <Badge tone={isDirect ? 'accent' : 'neutral'}>{isDirect ? 'Direct' : 'Live'}</Badge>
+      </RoomInfo>
+    </Bar>
   )
 }

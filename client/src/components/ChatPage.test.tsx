@@ -1,8 +1,9 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ChatPage from './ChatPage'
+import { renderWithTheme } from '../test/render'
 
 type MessageHandler = (payload: unknown) => void
 
@@ -59,7 +60,7 @@ vi.mock('../auth/AuthContext', () => ({
 }))
 
 function renderChat(entry: string) {
-  return render(
+  return renderWithTheme(
     <MemoryRouter initialEntries={[entry]}>
       <ChatPage />
     </MemoryRouter>,

@@ -1,9 +1,10 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, http } from 'msw'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Post } from '../../types'
 import { server } from '../../test/server'
+import { renderWithTheme } from '../../test/render'
 import Feed from './index'
 
 const authMocks = vi.hoisted(() => ({
@@ -55,7 +56,7 @@ describe('Feed', () => {
       }),
     )
 
-    render(<Feed />)
+    renderWithTheme(<Feed />)
 
     expect(await screen.findByText('Post 1')).toBeInTheDocument()
     expect(screen.getAllByText(/^Post \d$/)).toHaveLength(5)
@@ -85,7 +86,7 @@ describe('Feed', () => {
       }),
     )
 
-    render(<Feed />)
+    renderWithTheme(<Feed />)
 
     const input = await screen.findByPlaceholderText('Share something about music...')
     await user.type(input, 'Great song')
@@ -116,7 +117,7 @@ describe('Feed', () => {
       }),
     )
 
-    render(<Feed />)
+    renderWithTheme(<Feed />)
 
     expect(await screen.findByText('Mine')).toBeInTheDocument()
     expect(screen.getByText('Theirs')).toBeInTheDocument()

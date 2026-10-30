@@ -35,7 +35,7 @@ describe('App routes', () => {
 
     render(<App />)
 
-    expect(await screen.findByText('Login with spotify')).toBeInTheDocument()
+    expect(await screen.findByText('Continue with Spotify')).toBeInTheDocument()
   })
 
   it('renders protected content for an authenticated session', async () => {
@@ -54,6 +54,6 @@ describe('App routes', () => {
       expect(screen.getByRole('heading', { name: 'Feed' })).toBeInTheDocument()
     })
 
-    expect(screen.queryByText('Login with spotify')).not.toBeInTheDocument()
+    expect(screen.queryByText('Continue with Spotify')).not.toBeInTheDocument()
   })
 })

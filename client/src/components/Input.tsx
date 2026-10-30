@@ -1,36 +1,38 @@
-import { styled } from 'styled-components'
-import { customColors } from '../assets/colors'
+import styled from 'styled-components'
 import { SendIcon } from './icons'
+import { IconButton } from './ui/IconButton'
 
 const Form = styled.form`
   display: flex;
-  border-top: 2px solid #d3d3d3;
+  align-items: center;
+  gap: ${({ theme }) => theme.space.sm}px;
+  padding: ${({ theme }) => theme.space.md}px;
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.surface};
 `
 
 const TextInput = styled.input`
-  border: none;
-  border-radius: 0;
+  min-width: 0;
   flex: 1;
-  font-size: 1.2em;
-  padding: 5%;
-  background-color: transparent;
-  color: white;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radii.pill};
   outline: none;
+  background: ${({ theme }) => theme.colors.bgSoft};
+  color: ${({ theme }) => theme.colors.text};
+  transition:
+    border-color ${({ theme }) => theme.transitions.fast},
+    box-shadow ${({ theme }) => theme.transitions.fast};
 
   &::placeholder {
-    color: #828282;
+    color: ${({ theme }) => theme.colors.textFaint};
   }
-`
 
-const SendButton = styled.button`
-  color: #fff !important;
-  text-transform: uppercase;
-  text-decoration: none;
-  background: ${customColors.green};
-  display: flex;
-  align-items: center;
-  padding: 0 3%;
-  border: none;
+  &:focus {
+    border-color: ${({ theme }) => theme.colors.accent};
+    box-shadow: ${({ theme }) => theme.shadows.focus};
+  }
 `
 
 interface InputProps {
@@ -49,10 +51,11 @@ export default function Input({ message, setMessage, sendMessage }: InputProps) 
         maxLength={500}
         onChange={({ target: { value } }) => setMessage(value)}
         aria-label="Message"
+        autoComplete="off"
       />
-      <SendButton type="submit" disabled={!message.trim()}>
+      <IconButton label="Send message" tone="solid" type="submit" disabled={!message.trim()}>
         <SendIcon />
-      </SendButton>
+      </IconButton>
     </Form>
   )
 }

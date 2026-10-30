@@ -1,67 +1,35 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import type { ReactNode } from 'react'
-import { AuthProvider, useAuth } from './auth/AuthContext'
-import Navbar from './components/Navbar'
-import HomePage from './pages/HomePage'
-import Feed from './pages/Feed'
-import Profile from './pages/Profile'
-import Chat from './pages/Chat'
+import { ThemeProvider } from 'styled-components'
+import { AuthProvider } from './auth/AuthContext'
 import ChatPage from './components/ChatPage'
-
-function ProtectedRoute({ children }: { children: ReactNode }) {
-  const { status } = useAuth()
-
-  if (status === 'loading') {
-    return <p className="page-center">Loading...</p>
-  }
-  if (status === 'anonymous') {
-    return <Navigate to="/" replace />
-  }
-  return <>{children}</>
-}
+import { ProtectedLayout } from './components/layout/ProtectedLayout'
+import { GlobalStyle } from './styles/GlobalStyle'
+import { theme } from './theme'
+import Chat from './pages/Chat'
+import Feed from './pages/Feed'
+import HomePage from './pages/HomePage'
+import LoginPage from './pages/Login'
+import Profile from './pages/Profile'
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route
-            path="/feed"
-            element={
-              <ProtectedRoute>
-                <Feed />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/chats"
-            element={
-              <ProtectedRoute>
-                <Chat />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/chat"
-            element={
-              <ProtectedRoute>
-                <ChatPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route element={<ProtectedLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/feed" element={<Feed />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/chats" element={<Chat />} />
+              <Route path="/chat" element={<ChatPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
