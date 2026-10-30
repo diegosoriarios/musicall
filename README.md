@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="client/src/assets/logo.png" width="180" alt="Musicall logo" />
+  <img src="client/src/assets/icon.png" width="180" alt="Musicall logo" />
   <h1 align="center">Musicall</h1>
 </p>
 
