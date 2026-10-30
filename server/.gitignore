@@ -71,6 +71,12 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
+.env.local
+
+# SQLite database files
+*.sqlite3
+*.sqlite
+*.db
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
