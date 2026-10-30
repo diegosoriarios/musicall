@@ -8,6 +8,7 @@ export interface TestUser {
   email: string
   avatar: string
   spotify_refresh_token: string | null
+  session_version: number
 }
 
 export async function createUser(overrides: Partial<TestUser> = {}): Promise<TestUser> {
@@ -17,6 +18,7 @@ export async function createUser(overrides: Partial<TestUser> = {}): Promise<Tes
     email: 'user1@example.com',
     avatar: 'https://example.com/avatar.png',
     spotify_refresh_token: null,
+    session_version: 0,
     ...overrides,
   }
 
@@ -24,8 +26,14 @@ export async function createUser(overrides: Partial<TestUser> = {}): Promise<Tes
   return user
 }
 
-export function sessionCookieFor(user: Pick<TestUser, 'id' | 'username'>): string {
-  const token = signSessionToken({ sub: user.id, username: user.username })
+export function sessionCookieFor(
+  user: Pick<TestUser, 'id' | 'username' | 'session_version'>,
+): string {
+  const token = signSessionToken({
+    sub: user.id,
+    username: user.username,
+    sv: user.session_version,
+  })
   return `musicall_session=${token}`
 }
 

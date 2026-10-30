@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from 'express'
 import { ZodError } from 'zod'
 import { AppError } from '../utils/AppError.js'
 import { isProduction } from '../config/env.js'
+import { logError, redact } from '../utils/safeLog.js'
 
 export function notFoundHandler(req: Request, res: Response): void {
   res.status(404).json({ error: 'Not found' })
@@ -29,8 +30,8 @@ export function errorHandler(err: unknown, req: Request, res: Response, next: Ne
     return
   }
 
-  console.error(`Unhandled error on ${req.method} ${req.path}:`, err)
+  logError(`Unhandled error on ${req.method} ${req.path}`, err)
   res.status(500).json({
-    error: isProduction ? 'Internal server error' : String(err),
+    error: isProduction ? 'Internal server error' : redact(String(err)),
   })
 }

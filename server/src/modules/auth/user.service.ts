@@ -1,6 +1,7 @@
 import { db } from '../../database/connection.js'
 import { AppError } from '../../utils/AppError.js'
 import { refreshAccessToken } from './spotify.client.js'
+import { decryptToken, encryptToken, isEncryptedToken } from './tokenCrypto.js'
 
 interface SpotifyTokenCacheEntry {
   accessToken: string
@@ -17,6 +18,7 @@ export interface UserRow {
   email: string
   avatar: string
   spotify_refresh_token: string | null
+  session_version: number
 }
 
 export async function upsertUser(input: {
@@ -35,7 +37,9 @@ export async function upsertUser(input: {
         username: input.username,
         email: input.email,
         avatar: input.avatar,
-        ...(input.spotifyRefreshToken ? { spotify_refresh_token: input.spotifyRefreshToken } : {}),
+        ...(input.spotifyRefreshToken
+          ? { spotify_refresh_token: encryptToken(input.spotifyRefreshToken) }
+          : {}),
       })
   } else {
     await db('users').insert({
@@ -43,7 +47,9 @@ export async function upsertUser(input: {
       username: input.username,
       email: input.email,
       avatar: input.avatar,
-      spotify_refresh_token: input.spotifyRefreshToken ?? null,
+      spotify_refresh_token: input.spotifyRefreshToken
+        ? encryptToken(input.spotifyRefreshToken)
+        : null,
     })
   }
 
@@ -54,6 +60,25 @@ export async function upsertUser(input: {
 
 export async function findUserById(id: string): Promise<UserRow | undefined> {
   return db<UserRow>('users').where('id', id).first()
+}
+
+export async function revokeUserSessions(id: string): Promise<void> {
+  await db('users').where('id', id).increment('session_version', 1)
+}
+
+export async function encryptLegacyRefreshTokens(): Promise<void> {
+  const users = await db<UserRow>('users')
+    .whereNotNull('spotify_refresh_token')
+    .select('id', 'spotify_refresh_token')
+
+  for (const user of users) {
+    const stored = user.spotify_refresh_token
+    if (!stored || isEncryptedToken(stored)) continue
+
+    await db('users')
+      .where('id', user.id)
+      .update({ spotify_refresh_token: encryptToken(stored) })
+  }
 }
 
 export async function getFreshSpotifyAccessToken(user: UserRow): Promise<{
@@ -72,10 +97,17 @@ export async function getFreshSpotifyAccessToken(user: UserRow): Promise<{
     throw new AppError('No Spotify refresh token available. Please log in again.', 401)
   }
 
-  const tokens = await refreshAccessToken(user.spotify_refresh_token)
+  const refreshToken = decryptToken(user.spotify_refresh_token)
+  if (!refreshToken) {
+    throw new AppError('Stored Spotify token is invalid. Please log in again.', 401)
+  }
+
+  const tokens = await refreshAccessToken(refreshToken)
 
   if (tokens.refresh_token) {
-    await db('users').where('id', user.id).update({ spotify_refresh_token: tokens.refresh_token })
+    await db('users')
+      .where('id', user.id)
+      .update({ spotify_refresh_token: encryptToken(tokens.refresh_token) })
   }
 
   const entry: SpotifyTokenCacheEntry = {

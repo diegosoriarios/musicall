@@ -2,6 +2,7 @@ import request from 'supertest'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import app from '../src/app.js'
 import { db } from '../src/database/connection.js'
+import { decryptToken } from '../src/modules/auth/tokenCrypto.js'
 import { createUser, readCookie, sessionCookieFor } from './helpers.js'
 
 const spotify = vi.hoisted(() => ({
@@ -83,10 +84,9 @@ describe('auth routes', () => {
 
     const users = await db('users')
     expect(users).toHaveLength(1)
-    expect(users[0]).toMatchObject({
-      id: 'spotify-user',
-      spotify_refresh_token: 'spotify-refresh-token',
-    })
+    expect(users[0]).toMatchObject({ id: 'spotify-user' })
+    expect(users[0].spotify_refresh_token).not.toBe('spotify-refresh-token')
+    expect(decryptToken(users[0].spotify_refresh_token)).toBe('spotify-refresh-token')
   })
 
   it('returns 401 from /me when anonymous', async () => {
@@ -109,7 +109,8 @@ describe('auth routes', () => {
     expect(spotify.refreshAccessToken).toHaveBeenCalledWith('stored-refresh-token')
 
     const stored = await db('users').where('id', user.id).first()
-    expect(stored?.spotify_refresh_token).toBe('rotated-refresh-token')
+    expect(stored?.spotify_refresh_token).not.toBe('rotated-refresh-token')
+    expect(decryptToken(stored?.spotify_refresh_token ?? '')).toBe('rotated-refresh-token')
   })
 
   it('rejects Spotify token requests for users without a refresh token', async () => {
@@ -125,14 +126,17 @@ describe('auth routes', () => {
     })
   })
 
-  it('clears the session cookie on logout', async () => {
+  it('clears the session cookie and revokes existing sessions on logout', async () => {
     const user = await createUser()
+    const cookie = sessionCookieFor(user)
 
-    const response = await request(app)
-      .post('/api/auth/logout')
-      .set('Cookie', sessionCookieFor(user))
-      .expect(204)
+    const response = await request(app).post('/api/auth/logout').set('Cookie', cookie).expect(204)
 
     expect(response.headers['set-cookie']?.[0]).toContain('musicall_session=;')
+
+    await request(app).get('/api/auth/me').set('Cookie', cookie).expect(401)
+
+    const stored = await db('users').where('id', user.id).first()
+    expect(stored?.session_version).toBe(1)
   })
 })

@@ -4,6 +4,7 @@ import express from 'express'
 import helmet from 'helmet'
 import { env } from './config/env.js'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
+import { apiLimiter } from './middleware/rateLimit.js'
 import apiRoutes from './routes.js'
 
 const app = express()
@@ -20,7 +21,7 @@ app.use(
 app.use(cookieParser())
 app.use(express.json({ limit: '100kb' }))
 
-app.use('/api', apiRoutes)
+app.use('/api', apiLimiter, apiRoutes)
 
 app.use(notFoundHandler)
 app.use(errorHandler)

@@ -3,6 +3,7 @@ import { Server, type DefaultEventsMap, type Socket } from 'socket.io'
 import cookie from 'cookie'
 import { env } from '../config/env.js'
 import { SESSION_COOKIE, verifySessionToken } from '../modules/auth/session.js'
+import { findUserById } from '../modules/auth/user.service.js'
 import { registerChatHandlers } from './chat.js'
 import { registerPresenceHandlers } from './presence.js'
 
@@ -35,7 +36,7 @@ export function registerSockets(httpServer: HttpServer): MusicallServer {
     },
   })
 
-  server.use((socket, next) => {
+  server.use(async (socket, next) => {
     const header = socket.request.headers.cookie
     if (!header) return next(new Error('Not authenticated'))
 
@@ -46,9 +47,18 @@ export function registerSockets(httpServer: HttpServer): MusicallServer {
     const session = verifySessionToken(token)
     if (!session) return next(new Error('Not authenticated'))
 
-    socket.data.userId = session.sub
-    socket.data.username = session.username
-    next()
+    try {
+      const user = await findUserById(session.sub)
+      if (!user || user.session_version !== session.sv) {
+        return next(new Error('Not authenticated'))
+      }
+
+      socket.data.userId = user.id
+      socket.data.username = user.username
+      next()
+    } catch {
+      next(new Error('Not authenticated'))
+    }
   })
 
   server.on('connection', (socket) => {

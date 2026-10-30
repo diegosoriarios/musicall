@@ -4,6 +4,7 @@ import knex, { type Knex } from 'knex'
 import { env } from '../config/env.js'
 import * as createUsers from './migrations/create_users.js'
 import * as createPosts from './migrations/create_posts.js'
+import * as addSessionVersion from './migrations/add_session_version.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const isMemoryDatabase = env.DB_FILENAME === ':memory:'
@@ -25,6 +26,7 @@ const migrations: Record<
 > = {
   '20260926000001_create_users': createUsers,
   '20260926000002_create_posts': createPosts,
+  '20261030000003_add_session_version': addSessionVersion,
 }
 
 class StaticMigrationSource {

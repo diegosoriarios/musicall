@@ -3,9 +3,12 @@ import app from './app.js'
 import { env, isProduction } from './config/env.js'
 import { runMigrations } from './database/connection.js'
 import { registerSockets } from './sockets/index.js'
+import { encryptLegacyRefreshTokens } from './modules/auth/user.service.js'
+import { logError } from './utils/safeLog.js'
 
 async function main(): Promise<void> {
   await runMigrations()
+  await encryptLegacyRefreshTokens()
   console.log('Database migrations are up to date')
 
   const httpServer = createServer(app)
@@ -19,6 +22,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((err) => {
-  console.error('Failed to start server:', err)
+  logError('Failed to start server', err)
   process.exit(1)
 })

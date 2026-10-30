@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express'
 import { env } from '../../config/env.js'
 import { AppError } from '../../utils/AppError.js'
+import { logError } from '../../utils/safeLog.js'
 import {
   buildAuthorizeUrl,
   exchangeCodeForTokens,
@@ -14,7 +15,7 @@ import {
   setSessionCookie,
   signSessionToken,
 } from './session.js'
-import { findUserById, getFreshSpotifyAccessToken, upsertUser } from './user.service.js'
+import { getFreshSpotifyAccessToken, revokeUserSessions, upsertUser } from './user.service.js'
 
 export async function login(req: Request, res: Response): Promise<void> {
   const state = generateState()
@@ -55,7 +56,11 @@ export async function callback(req: Request, res: Response): Promise<void> {
       spotifyRefreshToken: tokens.refresh_token ?? null,
     })
 
-    const sessionToken = signSessionToken({ sub: user.id, username: user.username })
+    const sessionToken = signSessionToken({
+      sub: user.id,
+      username: user.username,
+      sv: user.session_version,
+    })
     setSessionCookie(res, sessionToken)
 
     // Spotify access token is passed via hash fragment so the client can call
@@ -69,22 +74,28 @@ export async function callback(req: Request, res: Response): Promise<void> {
         }).toString(),
     )
   } catch (err) {
-    console.error('Spotify auth callback failed:', err)
+    logError('Spotify auth callback failed', err)
     redirectWithError('invalid_token')
   }
 }
 
 export async function logout(req: Request, res: Response): Promise<void> {
+  const session = getSessionFromRequest(req)
+  if (session) {
+    try {
+      await revokeUserSessions(session.sub)
+    } catch (err) {
+      logError('Failed to revoke session', err)
+    }
+  }
+
   clearSessionCookie(res)
   res.status(204).send()
 }
 
 export async function me(req: Request, res: Response): Promise<void> {
-  const session = getSessionFromRequest(req)
-  if (!session) throw new AppError('Not authenticated', 401)
-
-  const user = await findUserById(session.sub)
-  if (!user) throw new AppError('User not found', 404)
+  const user = req.user
+  if (!user) throw new AppError('Not authenticated', 401)
 
   res.json({
     id: user.id,
@@ -95,11 +106,8 @@ export async function me(req: Request, res: Response): Promise<void> {
 }
 
 export async function spotifyToken(req: Request, res: Response): Promise<void> {
-  const session = getSessionFromRequest(req)
-  if (!session) throw new AppError('Not authenticated', 401)
-
-  const user = await findUserById(session.sub)
-  if (!user) throw new AppError('User not found', 404)
+  const user = req.user
+  if (!user) throw new AppError('Not authenticated', 401)
 
   const { accessToken, expiresIn } = await getFreshSpotifyAccessToken(user)
   res.json({ accessToken, expiresIn })

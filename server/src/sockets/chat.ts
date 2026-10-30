@@ -24,6 +24,21 @@ function getUsersInRoom(room: string): string[] {
     .filter((username, index, all) => all.indexOf(username) === index)
 }
 
+export function isRoomAuthorized(room: string, userId: string): boolean {
+  if (!room.startsWith('dm:')) return true
+
+  const parts = room.split(':')
+  if (parts.length !== 3) return false
+
+  const [, first, second] = parts
+  if (!first || !second || first === second) return false
+
+  const canonical = first < second ? `${first}:${second}` : `${second}:${first}`
+  if (`dm:${canonical}` !== room) return false
+
+  return first === userId || second === userId
+}
+
 export function registerChatHandlers(io: MusicallServer, socket: MusicallSocket): void {
   const { userId, username } = socket.data
 
@@ -35,6 +50,11 @@ export function registerChatHandlers(io: MusicallServer, socket: MusicallSocket)
     }
 
     const room = parsed.data.room
+
+    if (!isRoomAuthorized(room, userId)) {
+      callback?.({ error: 'Room not available' })
+      return
+    }
 
     // Leave any previous chat room before joining a new one
     const previous = usersBySocket.get(socket.id)

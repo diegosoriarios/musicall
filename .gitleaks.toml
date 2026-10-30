@@ -1,0 +1,13 @@
+title = "Musicall gitleaks configuration"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Test fixtures and documented placeholders"
+paths = [
+  '''server/test/.*''',
+  '''server/vitest\.config\.ts''',
+  '''\.env\.example''',
+  '''client/src/.*\.test\.tsx?''',
+]
